@@ -20,9 +20,8 @@ if ( -not (Test-Path $WorkDir\ManagerCore.ps1)) {
 
 $requiredVars = @("NUSPEC_DIR")
 Get-Environment-Variables -Path $EnvFile -RequiredVariables $requiredVars
-$data = Get-Data -Path $env:NUSPEC_DIR\$CustomProjectsFile -LeftKey "Name" -RightKey "Version"
 
-foreach ($projectData in $data) {
+foreach ($projectData in Get-Data -Path $env:NUSPEC_DIR\$CustomProjectsFile -LeftKey "Name" -RightKey "Version") {
     $version = $projectData["Version"]
     $versionDir = "v$version"
     $project = $projectData["Name"]
