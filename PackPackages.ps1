@@ -30,9 +30,7 @@ if(-not $DebugPreference -and -not (Test-Path $env:NUSPEC_DIR\tmp)){
     New-Item -ItemType Directory -Path $env:NUSPEC_DIR\tmp
 }
 
-$data = Get-Data -Path $env:NUSPEC_DIR\$CustomProjectsFile -LeftKey "Name" -RightKey "Version"
-
-foreach ($projectData in $data) {
+foreach ($projectData in Get-Data -Path $env:NUSPEC_DIR\$CustomProjectsFile -LeftKey "Name" -RightKey "Version") {
     $version = $projectData["Version"]
     $versionDir = "v$version"
     $project = $projectData["Name"]
