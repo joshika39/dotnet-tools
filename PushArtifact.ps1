@@ -32,6 +32,11 @@ if ($null -eq $env:WORK_DIR -or $null -eq $env:NUSPEC_DIR) {
 
 $nugetExePath = "$env:WORK_DIR\nuget.exe"
 
+if ( -not (Test-Path $nugetExePath)) {
+    Write-Host "Missing nuget.exe file."
+    exit 1
+}
+
 if ( -not (Test-Path $env:NUSPEC_DIR\.projects)) {
     Write-Host "Missing projects file."
     exit 1
