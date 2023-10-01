@@ -25,7 +25,7 @@ get-content $EnvFile | ForEach-Object {
     set-content env:\$name $value
 }
 
-if ($null -eq $env:WORK_DIR -or $null -eq $env:NUSPEC_DIR) {
+if ($null -eq $env:WORK_DIR -or $null -eq $env:NUSPEC_DIR -or $null -eq $env:BUILD_CONFIG) {
     Write-Host "Missing required variables."
     exit 1
 }
@@ -46,9 +46,14 @@ $projects = Get-Content $env:NUSPEC_DIR\.projects
 
 foreach ($project in $projects) {
     New-Item -ItemType Directory -Path $env:NUSPEC_DIR\tmp
-    Copy-Item -Path $env:NUSPEC_DIR\Projects\$project.nuspec -Destination $env:NUSPEC_DIR\tmp\
-    ((Get-Content -path $env:NUSPEC_DIR\tmp\$project.nuspec -Raw) -replace '{CONFIGURATION}', $Configuration) | Set-Content -Path $env:NUSPEC_DIR\tmp\$project.nuspec
-    & $nugetExePath pack $env:NUSPEC_DIR\tmp\$project.nuspec -version $version -OutputDirectory $$env:NUSPEC_DIR\Packages\$versionDir\
+    Write-Host "Created temp folder: $env:NUSPEC_DIR\tmp"
+
+    Copy-Item -Path $env:NUSPEC_DIR\Projects\$project.nuspec -Destination $env:NUSPEC_DIR\tmp
+    Write-Host "Copied: $env:NUSPEC_DIR\Projects\$project.nuspec -> $env:NUSPEC_DIR\tmp\$project.nuspec"
+    ((Get-Content -path $env:NUSPEC_DIR\tmp\$project.nuspec -Raw) -replace '{CONFIGURATION}', $env:BUILD_CONFIG) | Set-Content -Path $env:NUSPEC_DIR\tmp\$project.nuspec
+    
+    Write-Host "$project.nuspec set up with $env:BUILD_CONFIG build configuration"
+    & $nugetExePath pack $env:NUSPEC_DIR\tmp\$project.nuspec -version $version -OutputDirectory $env:NUSPEC_DIR\Packages\$versionDir\
 }
 
 Remove-Item -Path $env:NUSPEC_DIR\tmp\ -Recurse
