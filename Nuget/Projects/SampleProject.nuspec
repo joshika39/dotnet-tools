@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>joshika39.SampleProject</id>
+		<version>1.0.0</version>
+		<description>A Sample Nuspec file for the packing tool.</description>
+		<authors>joshika39</authors>
+		<dependencies>
+			<group targetFramework="net6.0">
+				<dependency id="dep.id" version="1.0.0" />
+			</group>
+		</dependencies>
+	</metadata>
+
+
+	<files>
+		<file src="..\..\Binaries\{CONFIGURATION}\net6.0\joshika39.SampleProject.dll" target="lib\net6.0" />
+		<file src="..\..\Binaries\{CONFIGURATION}\net6.0\joshika39.SampleProject.Impl.dll" target="lib\net6.0" />
+	</files>
+</package>
