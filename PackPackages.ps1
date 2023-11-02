@@ -68,7 +68,7 @@ foreach ($projectData in $projects) {
         ((Get-Content -path $env:NUSPEC_DIR\tmp\$project.nuspec -Raw) -replace '{CONFIGURATION}', $env:BUILD_CONFIG) | Set-Content -Path $env:NUSPEC_DIR\tmp\$project.nuspec
         Write-Output "$project.nuspec set up with $env:BUILD_CONFIG build configuration"
         
-        & $nugetExePath pack $env:NUSPEC_DIR\tmp\$project.nuspec -version $version -OutputDirectory $env:NUSPEC_DIR\Packages\$versionDir\
+        & $nugetExePath pack $env:NUSPEC_DIR\tmp\$project.nuspec -version $version -OutputDirectory $env:NUSPEC_DIR\Packages\$project\$versionDir\
     }
     else {
         Write-Output "Created temp folder: $env:NUSPEC_DIR\tmp"
