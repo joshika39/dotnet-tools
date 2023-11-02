@@ -54,15 +54,17 @@ foreach ($line in $lines) {
     }
 }
 
+if(-not $Debug -and -not (Test-Path $env:NUSPEC_DIR\tmp)){
+    Write-Output "Created temp folder: $env:NUSPEC_DIR\tmp"
+    New-Item -ItemType Directory -Path $env:NUSPEC_DIR\tmp
+}
+
 foreach ($projectData in $projects) {
     $version = $projectData["Version"]
     $versionDir = "v$version"
     $project = $projectData["Name"]
 
     if (-not $Debug) {
-        New-Item -ItemType Directory -Path $env:NUSPEC_DIR\tmp
-        Write-Output "Created temp folder: $env:NUSPEC_DIR\tmp"
-
         Copy-Item -Path $env:NUSPEC_DIR\Projects\$project.nuspec -Destination $env:NUSPEC_DIR\tmp
         Write-Output "Copied: $env:NUSPEC_DIR\Projects\$project.nuspec -> $env:NUSPEC_DIR\tmp\$project.nuspec"
         ((Get-Content -path $env:NUSPEC_DIR\tmp\$project.nuspec -Raw) -replace '{CONFIGURATION}', $env:BUILD_CONFIG) | Set-Content -Path $env:NUSPEC_DIR\tmp\$project.nuspec
