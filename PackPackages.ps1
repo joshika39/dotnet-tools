@@ -1,8 +1,6 @@
 param(
-    <#
-    .PARAMETER WorkDir
-    The file which contains the names for the nuspec files
-    #>
+
+    [string]$CustomProjectsFile = ".projects",
     [string]$EnvFile = ".env",
     [switch]$Debug
 )
@@ -29,15 +27,19 @@ if ( -not (Test-Path $nugetExePath)) {
     exit 1
 }
 
-if ( -not (Test-Path $env:NUSPEC_DIR\.projects)) {
+if ( -not (Test-Path $env:NUSPEC_DIR\$CustomProjectsFile)) {
     Write-Output "Missing projects file."
     exit 1
 }
 
 $projects = @()
-$lines = Get-Content $env:NUSPEC_DIR\.projects
+$lines = Get-Content $env:NUSPEC_DIR\$CustomProjectsFile
 foreach ($line in $lines) {
-    $parts = $line -split ';'
+    if ($line -match '^\s*#') {
+        continue
+    }
+    $line = $line -replace '\s*#.*$'
+    $parts = $line -split ':'
     
     if ($parts.Count -eq 2) {
         $project = @{
@@ -73,6 +75,7 @@ foreach ($projectData in $projects) {
         Write-Output "Copied: $env:NUSPEC_DIR\Projects\$project.nuspec -> $env:NUSPEC_DIR\tmp\$project.nuspec"
         Write-Output "$project.nuspec set up with $env:BUILD_CONFIG build configuration"
         Write-Output "Packing $env:NUSPEC_DIR\tmp\$project.nuspec with version $version to $env:NUSPEC_DIR\Packages\$project\$versionDir\"
+        Write-Output ""
     }
 }
 
