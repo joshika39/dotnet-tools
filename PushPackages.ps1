@@ -32,10 +32,10 @@ foreach ($projectData in $data) {
     }
 
     if (-not $DebugPreference ) {    
-        Write-Output "Info: Pushing $project to $Source"
+        Write-Host "Info: Pushing $project to $Source"
         & dotnet nuget push .\Nuget\Packages\$project\$versionDir\*.nupkg --source $Source --api-key $ApiKey
     }
     else {
-        Write-Output "(Debug) Info: Pushing $project to $Source with version $version from .\Nuget\Packages\$project\$versionDir\*.nupkg"
+        Write-Host "(Debug) Info: Pushing $project to $Source with version $version from .\Nuget\Packages\$project\$versionDir\*.nupkg"
     }
 }

@@ -7,7 +7,7 @@ function Get-Data {
         [string]$RightKey
     )
     if ( -not (Test-Path $Path)) {
-        Write-Output "Error: Missing data file."
+        Write-Host "Error: Missing data file."
         exit 1
     }
 
@@ -33,17 +33,18 @@ function Get-Data {
             $data += $project
         }
         else {
-            Write-Output "Error: Missing parameter(s) in the line: $line"
+            Write-Host "Error: Missing parameter(s) in the line: $line"
             exit
         }
     }
 
     if($data.Count -eq 0) {
-        Write-Output "Warning: No usable data found"
+        Write-Host "Warning: No usable data found"
+        exit
     }
 
-    Write-Output $("Discovered data count: " + $data.Count)
-    Write-Output ""
+    Write-Host $("Discovered data count: " + $data.Count)
+    Write-Host ""
 
     return $data
 }
@@ -55,7 +56,7 @@ function Get-Environment-Variables {
     )
 
     if (-not (Test-Path $Path)) {
-        Write-Output "The .env file does not exist."
+        Write-Host "The .env file does not exist."
         exit 1
     }
 
@@ -70,7 +71,7 @@ function Get-Environment-Variables {
     $missingVariables = $RequiredVariables | Where-Object { $null -eq $envVariables[$_] }
 
     if ($missingVariables.Count -gt 0) {
-        Write-Output "Missing required variables: $($missingVariables -join ', ')"
+        Write-Host "Missing required variables: $($missingVariables -join ', ')"
         exit 1
     }
 }
