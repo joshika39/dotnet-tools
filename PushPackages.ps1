@@ -5,26 +5,34 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$Source,
     [Parameter(Mandatory=$true)]
-    [string]$ApiKey
+    [string]$ApiKey,
+    [string]$EnvFile = ".env"
 )
 
+
+
 if ( -not (Test-Path $WorkDir\ManagerCore.ps1)) {
-    Write-Output "Missing Core scripts file."
+    Write-Host "Error: Missing Core scripts file."
     exit 1
 }
 
 . "$WorkDir\ManagerCore.ps1"
 
+$requiredVars = @("NUSPEC_DIR")
+Get-Environment-Variables -Path $EnvFile -RequiredVariables $requiredVars
 
-foreach ($projectData in Get-Data -Path $env:NUSPEC_DIR\$CustomProjectsFile -LeftKey "Name" -RightKey "Version") {
+$data = Get-Data -Path $env:NUSPEC_DIR\$CustomProjectsFile -LeftKey "Name" -RightKey "Version"
+
+foreach ($projectData in $data) {
     $version = $projectData["Version"]
     $versionDir = "v$version"
     $project = $projectData["Name"]
 
-    if (-not $DebugPreference ) {      
+    if (-not $DebugPreference ) {    
+        Write-Output "Info: Pushing $project to $Source"
         & dotnet nuget push .\Nuget\Packages\$project\$versionDir\*.nupkg --source $Source --api-key $ApiKey
     }
     else {
-        Write-Output "Pushing $project to $Source"
+        Write-Output "(Debug) Info: Pushing $project to $Source with version $version from .\Nuget\Packages\$project\$versionDir\*.nupkg"
     }
 }

@@ -7,7 +7,7 @@ function Get-Data {
         [string]$RightKey
     )
     if ( -not (Test-Path $Path)) {
-        Write-Output "Missing projects file."
+        Write-Output "Error: Missing projects file."
         exit 1
     }
 
@@ -32,6 +32,11 @@ function Get-Data {
             exit
         }
     }
+
+    if($data.Count -eq 0) {
+        Write-Output "Warning: No usable data found"
+    }
+
     return $projects
 }
 
