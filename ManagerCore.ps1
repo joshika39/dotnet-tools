@@ -7,11 +7,11 @@ function Get-Data {
         [string]$RightKey
     )
     if ( -not (Test-Path $Path)) {
-        Write-Output "Error: Missing projects file."
+        Write-Output "Error: Missing data file."
         exit 1
     }
 
-    $projects = @()
+    $data = @()
     $lines = Get-Content $Path
     foreach ($line in $lines) {
         if ($line -match '^\s*#') {
@@ -21,11 +21,16 @@ function Get-Data {
         $parts = $line -split ':'
         
         if ($parts.Count -eq 2) {
+            if($null -eq $parts[0] -or $null -eq $parts[1]) {
+                continue
+            }
+
             $project = @{
                 "$LeftKey"  = $parts[0]
                 "$RightKey" = $parts[1]
             }
-            $projects += $project
+
+            $data += $project
         }
         else {
             Write-Output "Error: Missing parameter(s) in the line: $line"
@@ -37,7 +42,10 @@ function Get-Data {
         Write-Output "Warning: No usable data found"
     }
 
-    return $projects
+    Write-Output $("Discovered data count: " + $data.Count)
+    Write-Output ""
+
+    return $data
 }
 
 function Get-Environment-Variables {

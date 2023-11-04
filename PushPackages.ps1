@@ -20,13 +20,16 @@ if ( -not (Test-Path $WorkDir\ManagerCore.ps1)) {
 
 $requiredVars = @("NUSPEC_DIR")
 Get-Environment-Variables -Path $EnvFile -RequiredVariables $requiredVars
-
 $data = Get-Data -Path $env:NUSPEC_DIR\$CustomProjectsFile -LeftKey "Name" -RightKey "Version"
 
 foreach ($projectData in $data) {
     $version = $projectData["Version"]
     $versionDir = "v$version"
     $project = $projectData["Name"]
+
+    if($null -eq $project -or $null -eq $versionDir -or $null -eq $version) {
+        continue
+    }
 
     if (-not $DebugPreference ) {    
         Write-Output "Info: Pushing $project to $Source"
